@@ -1,0 +1,22 @@
+.ant-form-item {
+    flex-wrap: wrap;
+}
+.ant-row {
+    display: flex;
+}
+
+.ant-form-item .ant-form-item-label:not([class*=" ant-col-xs"]),
+.ant-form-item .ant-form-item-control:not([class*=" ant-col-xs"]) {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+.ant-form-item .ant-form-item-label {
+    margin: 0;
+    white-space: initial;
+    text-align: start;
+    width: 300px;
+}
+
+.ant-picker,.ant-input-number{
+    width: 100%;
+}

@@ -1,0 +1,13 @@
+.header-table-container{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.ant-input-group-wrapper{
+    width: 200px;
+}
+.pagination-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
