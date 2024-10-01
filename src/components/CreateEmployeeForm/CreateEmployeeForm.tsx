@@ -6,14 +6,17 @@ import useYupValidationResolver from '../../hook/useYupValidationresolver';
 import { schemaValidation } from './validationSchema';
 import { useContext, useState} from 'react';
 import './CreatEmployeeForm.css'
-import SelectData from '../../selectData.json'
 import { UsersContext } from '../../context/UsersContext';
-import { User } from '../../types';
+import { User ,UserDB} from '../../types';
 import dayjs from 'dayjs';
 import { ModalComponent } from "modalopjm"
+import useFetchGetDepartments from '../../hook/useFetchGetDepartments';
+import useFetchGetStates from '../../hook/useFetchGetStates';
 
 
 function CreateEmployeeForm() {
+    const { data : states, isLoading: isLoadingStates, error: errorStates } = useFetchGetStates();
+    const { data: departments, isloaging: isLoadingDepartments, error: errorDepartments } = useFetchGetDepartments();
 
     const resolver = useYupValidationResolver(schemaValidation);
     const [open, setIsOpen] = useState(false);
@@ -21,16 +24,32 @@ function CreateEmployeeForm() {
             resolver,
             mode: 'onChange',         
             reValidateMode: 'onChange', 
-        });
+    });
+    
     const usersContext = useContext(UsersContext);
 
     if (!usersContext) {
         throw new Error('usersContext must be used within a UsersContext.Provider');
     }
 
-    const {addUser } = usersContext;
+    if (isLoadingStates || isLoadingDepartments) {
+        return <p>Loading...</p>;
+    }
 
+    if (errorStates || errorDepartments) {
+        return <p>Error: {errorStates?.message || errorDepartments?.message}</p>;
+    }
+
+    const { addUser } = usersContext;
     
+    function convertValueOnId(value: string, type: Array<{id:number,value:string,label:string}>) {
+        const element = type.find(element => element.value === value);
+        if (element) {
+            return element.id;
+        }
+        console.log("No matching ID found");
+        return null; 
+    }
     const handleSubmitForm = (data: User) => {
         const newUser = {
             FirstName: data.FirstName,
@@ -42,11 +61,22 @@ function CreateEmployeeForm() {
             State: data.State,
             ZipCode: data.ZipCode,
             Department: data.Department,
-    }as User;
-        addUser(newUser);
+        } as User;
+
+        const newUserDB = {
+            FirstName: data.FirstName,
+            LastName: data.LastName,
+            DateOfBirth: dayjs(data.DateOfBirth),
+            StartDate: dayjs(data.StartDate),
+            Street:data.Street,
+            City: data.City,
+            State:  convertValueOnId(data.State, states),
+            ZipCode: data.ZipCode,
+            Department: convertValueOnId(data.Department,departments),
+        }as UserDB
+        addUser(newUser)
         reset();
         setIsOpen(true);
-        console.log(newUser);
         
     };
     return (
@@ -145,7 +175,7 @@ function CreateEmployeeForm() {
                             <FormItem label="State" errorMessage={error?.message}>
                                 <Select
                                     value={value}
-                                    options={SelectData.states}
+                                    options={states}
                                     onChange={onChange}
                                     status={error ? 'error' : ''}
                                 />
@@ -170,11 +200,11 @@ function CreateEmployeeForm() {
                 <Controller
                         control={control}
                         name="Department"
-                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <FormItem label="Department" errorMessage={error?.message}>
-                                <Select
+                            <Select
                                     value={value}
-                                    options={SelectData.departments}
+                                    options={departments}
                                     onChange={onChange}
                                     status={error ? 'error' : ''}
                                 />
