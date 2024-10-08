@@ -1,18 +1,26 @@
-import {  useState } from "react";
+import {  useContext, useState } from "react";
 import { User } from "../types";
 import { fetchPostLogin } from "../services";
+import { LoginContext } from "../context/LoginContext";
+import { TokenContext } from "../context/TokenContext";
 
 function useFetchPostLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const loginContext = useContext(LoginContext);
+  const { setIsLogin } = loginContext;
+  
+  const tokenContext = useContext(TokenContext);
+  const {setToken} = tokenContext;
    
     const postLogin = async (data:User) => {
       setIsLoading(true);
       setError(null);
         try {
-        
         const response = await fetchPostLogin(data);
-        console.log(response);
+        setIsLogin(true);
+        setToken(response.token)
+          
       } catch (err:unknown) {
         console.error("Erreur lors de la l'envoi", err);
          if (err instanceof Error) {

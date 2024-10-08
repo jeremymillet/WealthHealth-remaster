@@ -14,7 +14,6 @@ function useFetchGetEmployees() {
       setError(null);
       try {
         const response = await fetchGetEmployees();
-        console.log(response);
         const formattedResponse: EmployeeFromDBConvert[] = response.map((employee: EmployeeFromDB) => ({
           ...employee,
           startDate: dayjs(employee.startDate),

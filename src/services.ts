@@ -57,9 +57,8 @@ export async function fetchGetEmployees() {
     
 }
 export async function fetchPostLogin(payload: User) {
-    console.log(JSON.stringify(payload));
     try {
-        const response = await fetch('http://localhost:3001/api/user', {
+        const response = await fetch('http://localhost:3001/api/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,7 +69,7 @@ export async function fetchPostLogin(payload: User) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Response: ", data);
+        return data;
         }
      catch (error) {
         console.error("Error fetching ", error);

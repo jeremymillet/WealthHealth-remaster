@@ -8,8 +8,13 @@ import { ModalComponent } from 'modalopjm';
 import { useState } from 'react';
 import useFetchPostLogin from '../../hook/useFetchPostLogin';
 
+type PropsLoginType = {
+    setFormOpen: (isOpen: boolean) => void;
+}
 
-function FormLogin() {
+
+const FormLogin: React.FC<PropsLoginType> = ({ setFormOpen }) => {
+    
     const { postLogin, isLoading: isLoadingUser, error: errorPostUser } = useFetchPostLogin();
     const resolver = useYupValidationResolver(schemaValidation);
     const { control, handleSubmit, reset } = useForm({
@@ -22,6 +27,7 @@ function FormLogin() {
         postLogin(data)
         reset();
         setIsOpen(true);
+        setFormOpen(false);
     };
 
     return(

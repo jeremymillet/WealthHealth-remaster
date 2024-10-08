@@ -28,7 +28,6 @@ import useFetchGetEmployees from '../../hook/useFetchGetEmployees';
         key: 'StartDate',
         sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.startDate.unix() - b.startDate.unix(),
         render: (value: Dayjs) => {
-            console.log(value)
             return (<p>{value.format("MM/DD/YYYY")}</p>)
         }
     },
