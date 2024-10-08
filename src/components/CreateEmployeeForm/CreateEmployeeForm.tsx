@@ -7,14 +7,16 @@ import { schemaValidation } from './validationSchema';
 import { useContext, useState} from 'react';
 import './CreatEmployeeForm.css'
 import { UsersContext } from '../../context/UsersContext';
-import { User ,UserDB} from '../../types';
+import { EmployeeFromDB,EmployeeToDB} from '../../types';
 import dayjs from 'dayjs';
 import { ModalComponent } from "modalopjm"
 import useFetchGetDepartments from '../../hook/useFetchGetDepartments';
 import useFetchGetStates from '../../hook/useFetchGetStates';
+import useFetchPostEmployee from '../../hook/useFetchPostEmployee';
 
 
 function CreateEmployeeForm() {
+    const { postEmployee, isLoading: isLoadingEmployee, error: errorPostEmployee } = useFetchPostEmployee();
     const { data : states, isLoading: isLoadingStates, error: errorStates } = useFetchGetStates();
     const { data: departments, isloaging: isLoadingDepartments, error: errorDepartments } = useFetchGetDepartments();
 
@@ -40,8 +42,6 @@ function CreateEmployeeForm() {
         return <p>Error: {errorStates?.message || errorDepartments?.message}</p>;
     }
 
-    const { addUser } = usersContext;
-    
     function convertValueOnId(value: string, type: Array<{id:number,value:string,label:string}>) {
         const element = type.find(element => element.value === value);
         if (element) {
@@ -50,31 +50,19 @@ function CreateEmployeeForm() {
         console.log("No matching ID found");
         return null; 
     }
-    const handleSubmitForm = (data: User) => {
-        const newUser = {
-            FirstName: data.FirstName,
-            LastName: data.LastName,
-            DateOfBirth: dayjs(data.DateOfBirth),
-            StartDate: dayjs(data.StartDate),
-            Street:data.Street,
-            City: data.City,
-            State: data.State,
-            ZipCode: data.ZipCode,
-            Department: data.Department,
-        } as User;
-
+    const handleSubmitForm = (data: EmployeeFromDB) => {
         const newUserDB = {
-            FirstName: data.FirstName,
-            LastName: data.LastName,
-            DateOfBirth: dayjs(data.DateOfBirth),
-            StartDate: dayjs(data.StartDate),
-            Street:data.Street,
-            City: data.City,
-            State:  convertValueOnId(data.State, states),
-            ZipCode: data.ZipCode,
-            Department: convertValueOnId(data.Department,departments),
-        }as UserDB
-        addUser(newUser)
+            firstName: data.firstName,
+            lastName: data.lastName,
+            dateOfBirth: dayjs(data.dateOfBirth),
+            startDate: dayjs(data.startDate),
+            street:data.street,
+            city: data.city,
+            state:  convertValueOnId(data.state, states),
+            zipCode: data.zipCode,
+            department: convertValueOnId(data.department,departments),
+        } as EmployeeToDB
+        postEmployee(newUserDB)
         reset();
         setIsOpen(true);
         
@@ -90,7 +78,7 @@ function CreateEmployeeForm() {
                             <Input
                                 value={value}
                                 onChange={e => onChange(e.target.value)}
-                                name="FirstName"
+                                name="firstName"
                                 status={error ? 'error' : ''}
                             />
                         </FormItem>
@@ -104,7 +92,7 @@ function CreateEmployeeForm() {
                             <Input
                                 value={value}
                                 onChange={e => onChange(e.target.value)}
-                                name="LastName"
+                                name="lastName"
                                 status={error ? 'error' : ''}
                             />
                         </FormItem>
@@ -118,7 +106,7 @@ function CreateEmployeeForm() {
                             <DatePicker
                                 value={value}
                                 onChange={onChange}
-                                name="DateOfBirth"
+                                name="dateOfBirth"
                                 status={error ? 'error' : ''}
                             />
                         </FormItem>
@@ -132,7 +120,7 @@ function CreateEmployeeForm() {
                             <DatePicker
                                 value={value}
                                 onChange={onChange}
-                                name="StartDate"
+                                name="startDate"
                                 status={error ? 'error' : ''}
                             />
                         </FormItem>
@@ -148,7 +136,7 @@ function CreateEmployeeForm() {
                                 <Input
                                     value={value}
                                     onChange={e => onChange(e.target.value)}
-                                    name="Street"
+                                    name="street"
                                     status={error ? 'error' : ''}
                                 />
                             </FormItem>
@@ -162,7 +150,7 @@ function CreateEmployeeForm() {
                                 <Input
                                     value={value}
                                     onChange={e => onChange(e.target.value)}
-                                    name="City"
+                                    name="city"
                                     status={error ? 'error' : ''}
                                 />
                             </FormItem>
@@ -190,7 +178,7 @@ function CreateEmployeeForm() {
                                 <InputNumber
                                     value={value}
                                     onChange={onChange}
-                                    name="ZipCode"
+                                    name="zipCode"
                                     status={error ? 'error' : ''}
                                 />
                             </FormItem>
@@ -214,7 +202,8 @@ function CreateEmployeeForm() {
                 <Button type="primary" htmlType="submit">Save</Button>
             </Form>
             <ModalComponent setIsOpen={setIsOpen} open={open}>
-                <p>Success</p>
+                {isLoadingEmployee? <p>Loading...</p>:""}
+                {errorPostEmployee? <p>Error</p>: <p>Success</p>}
             </ModalComponent>
 
         </div>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { fetchGetDepartments } from "../services";
-import { Department } from "../types";
+
 
 
 function useFetchGetDepartments() {
-    const [data, setData] = useState<Department[]>([]);
+    const [data, setData] = useState([]);
     const [isloaging, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     

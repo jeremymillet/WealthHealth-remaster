@@ -4,14 +4,15 @@ import CurrentEmployee from './pages/CurrentEmployee/CurrentEmployee'
 
 
 
+
 function Router() {
   
   return (
     
       <BrowserRouter>
         <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/CurrentEmployee" element={<CurrentEmployee />} />
+            <Route path="/createEmployees" element={<Home />} />
+            <Route path="/" element={<CurrentEmployee />} />
         </Routes>
       </BrowserRouter>
     

@@ -1,20 +1,18 @@
-import { useEffect, useState } from "react";
-import { fetchGetStates } from "../services";
+import {  useState } from "react";
+import { fetchPostNewEmployees } from "../services";
+import { EmployeeToDB } from "../types";
 
-
-
-
-function useFetchGetStates() {
-  const [data, setData] = useState([]);
+function useFetchPostEmployee() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-   useEffect(() => {
-    const States = async () => {
+   
+    const postEmployee = async (data:EmployeeToDB) => {
       setIsLoading(true);
       setError(null);
-      try {
-        const response = await fetchGetStates();
-        setData(response);
+        try {
+        
+        const response = await fetchPostNewEmployees(data);
+        console.log(response);
       } catch (err:unknown) {
         console.error("Erreur lors de la récupération des données de l'utilisateur:", err);
          if (err instanceof Error) {
@@ -26,9 +24,8 @@ function useFetchGetStates() {
         setIsLoading(false);
       }
     };
-    States()    
-  }, []); 
-  return { data, isLoading, error};
+      
+  return {postEmployee,isLoading, error};
 }
 
-export default useFetchGetStates;
+export default useFetchPostEmployee;

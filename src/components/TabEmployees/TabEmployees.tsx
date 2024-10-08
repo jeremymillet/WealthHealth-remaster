@@ -1,32 +1,32 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Table, Select, Input, Pagination } from 'antd';
-import { UsersContext } from '../../context/UsersContext';
 const { Option } = Select;
 const { Search } = Input;
-import {User} from '../../types/index'
+import {EmployeeFromDBConvert} from '../../types/index'
 import './TabEmployees.css'
 import { Dayjs } from 'dayjs';
+import useFetchGetEmployees from '../../hook/useFetchGetEmployees';
 
 
 
  const tableColumns = [
     {
         title: 'First Name',
-        dataIndex: 'FirstName',
+        dataIndex: 'firstName',
         key: 'FirstName',
-        sorter: (a: User, b: User) => a.FirstName.localeCompare(b.FirstName),
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.firstName.localeCompare(b.firstName),
     },
     {
         title: 'Last Name',
-        dataIndex: 'LastName',
+        dataIndex: 'lastName',
         key: 'LastName',
-        sorter: (a: User, b: User) => a.LastName.localeCompare(b.LastName),
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.lastName.localeCompare(b.lastName),
     },
     {
         title: 'Start Date',
-        dataIndex: 'StartDate',
+        dataIndex: 'startDate',
         key: 'StartDate',
-        sorter: (a: User, b: User) => a.StartDate.unix() - b.StartDate.unix(),
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.startDate.unix() - b.startDate.unix(),
         render: (value: Dayjs) => {
             console.log(value)
             return (<p>{value.format("MM/DD/YYYY")}</p>)
@@ -34,52 +34,50 @@ import { Dayjs } from 'dayjs';
     },
     {
         title: 'Department',
-        dataIndex: 'Department',
+        dataIndex: 'department',
         key: 'Department',
-        sorter: (a: User, b: User) => a.Department.localeCompare(b.Department),
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.department.localeCompare(b.department),
     },
     {
         title: 'Date of Birth',
-        dataIndex: 'DateOfBirth',
+        dataIndex: 'dateOfBirth',
         key: 'DateOfBirth',
-        sorter: (a: User, b: User) => a.DateOfBirth.unix() - b.DateOfBirth.unix(),
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.dateOfBirth.unix() - b.dateOfBirth.unix(),
         render: (value: Dayjs) =>  (<p>{value.format("MM/DD/YYYY")}</p>)
     },
     {
         title: 'Street',
-        dataIndex: 'Street',
+        dataIndex: 'street',
         key: 'Street',
-        sorter: (a: User, b: User) => a.Street.localeCompare(b.Street),
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.street.localeCompare(b.street),
     },
     {
         title: 'City',
-        dataIndex: 'City',
+        dataIndex: 'city',
         key: 'City',
-        sorter: (a: User, b: User) => a.City.localeCompare(b.City),
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.city.localeCompare(b.city),
     },
     {
         title: 'State',
-        dataIndex: 'State',
+        dataIndex: 'state',
         key: 'State',
-        sorter: (a: User, b: User) => a.State.localeCompare(b.State),
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.state.localeCompare(b.state),
     },
     {
         title: 'Zip Code',
-        dataIndex: 'ZipCode',
+        dataIndex: 'zipCode',
         key: 'ZipCode',
-        sorter: (a: User, b: User) => a.ZipCode - b.ZipCode,
+        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.zipCode - b.zipCode,
     },
 ];
 
 function TabEmployees() {
-    const usersContext = useContext(UsersContext);
-    const { users } = usersContext;
+    const { data : employees, isLoading: isLoadingEmployees, error: errorPostEmployees } = useFetchGetEmployees();
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState(10);
     const [searchText, setSearchText] = useState('');
 
     const handlePageSizeChange = (value: number) => {
-        
         setPageSize(value);
     };
 
@@ -87,15 +85,20 @@ function TabEmployees() {
         setSearchText(value.toLowerCase());
     };
 
-    const filteredUsers = users.filter(user =>
-        Object.values(user).some(val =>
+    const filteredEmployees = employees.filter(employee =>
+        Object.values(employee).some(val =>
             typeof val === 'string' && val.toLowerCase().includes(searchText)
         )
     );
 
-    const sortUsers = filteredUsers;
-   
+    const sortEmployees = filteredEmployees;
 
+    if (isLoadingEmployees) { 
+        return <p>Loading...</p>;
+    }
+    if (errorPostEmployees) { 
+        return <p>error</p>;
+    }
     
     return (
         <div>
@@ -114,7 +117,7 @@ function TabEmployees() {
                 <Search placeholder="Search"  onSearch={handleSearch}/>
             </div>
             <Table
-                dataSource={sortUsers}
+                dataSource={sortEmployees}
                 columns={tableColumns}
                 pagination={false}
                 bordered
@@ -125,12 +128,12 @@ function TabEmployees() {
                 <div>
                     {`Showing ${(currentPage - 1) * pageSize + 1} to ${Math.min(
                         currentPage * pageSize,
-                        sortUsers.length
-                    )} of ${sortUsers.length} entries`}
+                        sortEmployees.length
+                    )} of ${sortEmployees.length} entries`}
                 </div>
                 <Pagination
                     current={currentPage}
-                    total={sortUsers.length}
+                    total={sortEmployees.length}
                     pageSize={pageSize}
                     onChange={setCurrentPage}
                 />
