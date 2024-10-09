@@ -1,4 +1,4 @@
-import { User, EmployeeToDB } from "./types";
+import { User, EmployeeToDBConvert } from "./types";
 
 export async function fetchGetDepartments(){
     try {
@@ -77,13 +77,14 @@ export async function fetchPostLogin(payload: User) {
     }
     
 }
-export async function fetchPostNewEmployees(payload: EmployeeToDB) {
+export async function fetchPostNewEmployees(payload: EmployeeToDBConvert,token) {
     console.log(JSON.stringify(payload));
     try {
         const response = await fetch('http://localhost:3001/api/employees', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'authorization': 'Bearer ' + token
             },
             body: JSON.stringify(payload),
         });

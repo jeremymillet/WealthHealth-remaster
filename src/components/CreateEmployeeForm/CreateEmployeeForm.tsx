@@ -7,7 +7,7 @@ import { schemaValidation } from './validationSchema';
 import { useContext, useState} from 'react';
 import './CreatEmployeeForm.css'
 import { UsersContext } from '../../context/UsersContext';
-import { EmployeeFromDB,EmployeeToDB} from '../../types';
+import {EmployeeToDB, EmployeeToDBConvert} from '../../types';
 import dayjs from 'dayjs';
 import { ModalComponent } from "modalopjm"
 import useFetchGetDepartments from '../../hook/useFetchGetDepartments';
@@ -50,18 +50,18 @@ function CreateEmployeeForm() {
         console.log("No matching ID found");
         return null; 
     }
-    const handleSubmitForm = (data: EmployeeFromDB) => {
+    const handleSubmitForm = (data: EmployeeToDB) => {
         const newUserDB = {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            dateOfBirth: dayjs(data.dateOfBirth),
-            startDate: dayjs(data.startDate),
-            street:data.street,
-            city: data.city,
-            state:  convertValueOnId(data.state, states),
-            zipCode: data.zipCode,
-            department: convertValueOnId(data.department,departments),
-        } as EmployeeToDB
+            firstName: data.FirstName,
+            lastName: data.LastName,
+            dateOfBirth: dayjs(data.DateOfBirth),
+            startDate: dayjs(data.StartDate),
+            street:data.Street,
+            city: data.City,
+            state:  convertValueOnId(data.State, states),
+            zipCode: data.ZipCode,
+            department: convertValueOnId(data.Department,departments),
+        } as EmployeeToDBConvert
         postEmployee(newUserDB)
         reset();
         setIsOpen(true);
@@ -78,7 +78,7 @@ function CreateEmployeeForm() {
                             <Input
                                 value={value}
                                 onChange={e => onChange(e.target.value)}
-                                name="firstName"
+                                name="FirstName"
                                 status={error ? 'error' : ''}
                             />
                         </FormItem>

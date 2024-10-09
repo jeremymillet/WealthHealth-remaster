@@ -26,6 +26,18 @@ export type EmployeeFromDBConvert = {
 };
 export type EmployeeToDB = {
   id: number;
+  FirstName: string;
+  LastName: string;
+  DateOfBirth: Dayjs;
+  StartDate: Dayjs;
+  Street: string;
+  City: string;
+  State: string;
+  ZipCode: number;
+  Department: string;
+};
+export type EmployeeToDBConvert = {
+  id: number;
   firstName: string;
   lastName: string;
   dateOfBirth: Dayjs;

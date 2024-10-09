@@ -1,18 +1,22 @@
-import {  useState } from "react";
+import {  useContext, useState } from "react";
 import { fetchPostNewEmployees } from "../services";
-import { EmployeeToDB } from "../types";
+import { EmployeeToDBConvert } from "../types";
+import { TokenContext } from "../context/TokenContext";
 
 function useFetchPostEmployee() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
    
-    const postEmployee = async (data:EmployeeToDB) => {
+  const tokenContext = useContext(TokenContext);
+  const { token } = tokenContext;
+
+
+    const postEmployee = async (data:EmployeeToDBConvert) => {
       setIsLoading(true);
       setError(null);
         try {
-        
-        const response = await fetchPostNewEmployees(data);
-        console.log(response);
+          await fetchPostNewEmployees(data, token);
+          console.log("Nouvel employé créé avec succès");
       } catch (err:unknown) {
         console.error("Erreur lors de la récupération des données de l'utilisateur:", err);
          if (err instanceof Error) {
