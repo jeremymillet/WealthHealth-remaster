@@ -103,7 +103,7 @@ export async function fetchPostNewEmployees(payload: EmployeeFormValues,token) {
 
 export async function fetchDeleteEmployees(payload:number,token:string) {
     try {
-        const response = await fetch(`http://localhost:3001/employees${payload}`, {
+        const response = await fetch(`http://localhost:3001/employees/${payload}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
