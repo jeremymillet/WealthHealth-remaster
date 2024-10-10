@@ -2,17 +2,12 @@ import { Link } from "react-router-dom"
 import TabEmployees from "../../components/TabEmployees/TabEmployees"
 import './CurrentEmployee.css'
 import Header from "../../components/Header/Header"
-import { LoginContext } from "../../context/LoginContext";
-import { useContext } from "react";
+import useAuthContext from "../../context/hook/useAuthContext";
+
 
 function CurrentEmployee() {
-    const loginContext = useContext(LoginContext);
-    const { isLogin } = loginContext;
-
-    if (!LoginContext) {
-        throw new Error('usersContext must be used within a UsersContext.Provider');
-    }
-
+    const {isLogin} = useAuthContext();
+    
     return (
         <div>
             <Header/>

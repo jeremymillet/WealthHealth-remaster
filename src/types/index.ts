@@ -1,18 +1,6 @@
 import{ Dayjs} from "dayjs";
 
-export type EmployeeFromDB = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  dateOfBirth:  Date;
-  startDate: Date;
-  street: string;
-  city: string;
-  state: string;
-  zipCode: number;
-  department: string;
-};
-export type EmployeeFromDBConvert = {
+export type Employee = {
   id: number;
   firstName: string;
   lastName: string;
@@ -24,32 +12,31 @@ export type EmployeeFromDBConvert = {
   zipCode: number;
   department: string;
 };
-export type EmployeeToDB = {
-  id: number;
+
+export type EmployeeFormValues = {
   FirstName: string;
   LastName: string;
-  DateOfBirth: Dayjs;
-  StartDate: Dayjs;
+  DateOfBirth: string;
+  StartDate: string;
   Street: string;
   City: string;
-  State: string;
+  State: number;
   ZipCode: number;
-  Department: string;
-};
-export type EmployeeToDBConvert = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Dayjs;
-  startDate: Dayjs;
-  street: string;
-  city: string;
-  state: number;
-  zipCode: number;
-  department: number;
+  Department: number;
 };
 
 export type User = {
   email: string;
   password: string;
 };
+export type Department = {
+  id: number;
+  value: string;
+  label: string;
+}
+
+export type States = {
+  id: number;
+  value: string;
+  label: string;
+}

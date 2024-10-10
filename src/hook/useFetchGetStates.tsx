@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { fetchGetStates } from "../services";
+import { States } from "../types";
 
 
 
 
 function useFetchGetStates() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<States[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
    useEffect(() => {

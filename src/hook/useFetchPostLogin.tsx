@@ -1,17 +1,16 @@
-import {  useContext, useState } from "react";
+import {useState } from "react";
 import { User } from "../types";
 import { fetchPostLogin } from "../services";
-import { LoginContext } from "../context/LoginContext";
-import { TokenContext } from "../context/TokenContext";
+import useAuthContext from "../context/hook/useAuthContext";
+
 
 function useFetchPostLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const loginContext = useContext(LoginContext);
-  const { setIsLogin } = loginContext;
+  const {setIsLogin,setToken} = useAuthContext();
   
-  const tokenContext = useContext(TokenContext);
-  const {setToken} = tokenContext;
+  
+ 
    
     const postLogin = async (data:User) => {
       setIsLoading(true);

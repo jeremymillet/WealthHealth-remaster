@@ -7,8 +7,7 @@ import { schemaValidation } from './validationSchema';
 import { useContext, useState} from 'react';
 import './CreatEmployeeForm.css'
 import { UsersContext } from '../../context/UsersContext';
-import {EmployeeToDB, EmployeeToDBConvert} from '../../types';
-import dayjs from 'dayjs';
+import {EmployeeFormValues} from '../../types';
 import { ModalComponent } from "modalopjm"
 import useFetchGetDepartments from '../../hook/useFetchGetDepartments';
 import useFetchGetStates from '../../hook/useFetchGetStates';
@@ -42,27 +41,8 @@ function CreateEmployeeForm() {
         return <p>Error: {errorStates?.message || errorDepartments?.message}</p>;
     }
 
-    function convertValueOnId(value: string, type: Array<{id:number,value:string,label:string}>) {
-        const element = type.find(element => element.value === value);
-        if (element) {
-            return element.id;
-        }
-        console.log("No matching ID found");
-        return null; 
-    }
-    const handleSubmitForm = (data: EmployeeToDB) => {
-        const newUserDB = {
-            firstName: data.FirstName,
-            lastName: data.LastName,
-            dateOfBirth: dayjs(data.DateOfBirth),
-            startDate: dayjs(data.StartDate),
-            street:data.Street,
-            city: data.City,
-            state:  convertValueOnId(data.State, states),
-            zipCode: data.ZipCode,
-            department: convertValueOnId(data.Department,departments),
-        } as EmployeeToDBConvert
-        postEmployee(newUserDB)
+    const handleSubmitForm = (data: EmployeeFormValues) => {
+        postEmployee(data)
         reset();
         setIsOpen(true);
         
@@ -72,13 +52,13 @@ function CreateEmployeeForm() {
              <Form  onFinish={handleSubmit(handleSubmitForm)} className="form-container">
                 <Controller 
                     control={control}
-                    name="FirstName"
+                    name="firstName"
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <FormItem  label="First Name" errorMessage={error?.message}>
                             <Input
                                 value={value}
                                 onChange={e => onChange(e.target.value)}
-                                name="FirstName"
+                                name="firstName"
                                 status={error ? 'error' : ''}
                             />
                         </FormItem>
@@ -86,7 +66,7 @@ function CreateEmployeeForm() {
                 />
                 <Controller
                     control={control}
-                    name="LastName"
+                    name="lastName"
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <FormItem label="Last Name" errorMessage={error?.message}>
                             <Input
@@ -100,7 +80,7 @@ function CreateEmployeeForm() {
                 />
                 <Controller
                     control={control}
-                    name="DateOfBirth"
+                    name="dateOfBirth"
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <FormItem label="Date of Birth" errorMessage={error?.message}>
                             <DatePicker
@@ -114,7 +94,7 @@ function CreateEmployeeForm() {
                 />
                 <Controller
                     control={control}
-                    name="StartDate"
+                    name="startDate"
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <FormItem label="Start Date" errorMessage={error?.message}>
                             <DatePicker
@@ -130,7 +110,7 @@ function CreateEmployeeForm() {
                     <h2>Address</h2>
                     <Controller
                         control={control}
-                        name="Street"
+                        name="street"
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <FormItem label="Street" errorMessage={error?.message}>
                                 <Input
@@ -144,7 +124,7 @@ function CreateEmployeeForm() {
                     />
                     <Controller
                         control={control}
-                        name="City"
+                        name="city"
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <FormItem label="City" errorMessage={error?.message}>
                                 <Input
@@ -158,12 +138,12 @@ function CreateEmployeeForm() {
                     />
                     <Controller
                         control={control}
-                        name="State"
+                        name="state"
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <FormItem label="State" errorMessage={error?.message}>
                                 <Select
                                     value={value}
-                                    options={states}
+                                    options={states.map(state =>({value: state.id.toString(), label: state.label}))}
                                     onChange={onChange}
                                     status={error ? 'error' : ''}
                                 />
@@ -172,7 +152,7 @@ function CreateEmployeeForm() {
                     />
                     <Controller
                         control={control}
-                        name="ZipCode"
+                        name="zipCode"
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <FormItem label="Zip Code" errorMessage={error?.message}>
                                 <InputNumber
@@ -187,12 +167,12 @@ function CreateEmployeeForm() {
                 </div>
                 <Controller
                         control={control}
-                        name="Department"
+                        name="department"
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <FormItem label="Department" errorMessage={error?.message}>
                             <Select
                                     value={value}
-                                    options={departments}
+                                    options={departments.map(department =>({value: department.id.toString(), label: department.label}))}
                                     onChange={onChange}
                                     status={error ? 'error' : ''}
                                 />

@@ -1,10 +1,10 @@
 import { createContext, PropsWithChildren, useState } from "react";
-import { EmployeeToDB } from "../types";
+import { EmployeeFormValues } from "../types";
 
 
 type UsersContextType = {
-  users: EmployeeToDB[];
-    addUser: (user: EmployeeToDB) => void;
+  users: EmployeeFormValues[];
+    addUser: (user: EmployeeFormValues) => void;
 };
 
 
@@ -14,9 +14,9 @@ export const UsersContext = createContext<UsersContextType>({ users: [], addUser
 
 
 function UsersContextProvider({ children }:UsersContextProviderProps) {
-    const [users, setUsers] = useState<EmployeeToDB[]>([]);
+    const [users, setUsers] = useState<EmployeeFormValues[]>([]);
 
-     function addUser(user: EmployeeToDB) {
+     function addUser(user: EmployeeFormValues) {
         setUsers((state) => [...state, { ...user,Id: state.length + 1}]);
     }
     

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Table, Select, Input, Pagination } from 'antd';
 const { Option } = Select;
 const { Search } = Input;
-import {EmployeeFromDBConvert} from '../../types/index'
+import {Employee} from '../../types/index'
 import './TabEmployees.css'
 import { Dayjs } from 'dayjs';
 import useFetchGetEmployees from '../../hook/useFetchGetEmployees';
@@ -14,19 +14,19 @@ import useFetchGetEmployees from '../../hook/useFetchGetEmployees';
         title: 'First Name',
         dataIndex: 'firstName',
         key: 'FirstName',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.firstName.localeCompare(b.firstName),
+        sorter: (a: Employee, b: Employee) => a.firstName.localeCompare(b.firstName),
     },
     {
         title: 'Last Name',
         dataIndex: 'lastName',
         key: 'LastName',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.lastName.localeCompare(b.lastName),
+        sorter: (a: Employee, b: Employee) => a.lastName.localeCompare(b.lastName),
     },
     {
         title: 'Start Date',
         dataIndex: 'startDate',
         key: 'StartDate',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.startDate.unix() - b.startDate.unix(),
+        sorter: (a: Employee, b: Employee) => a.startDate.unix() - b.startDate.unix(),
         render: (value: Dayjs) => {
             return (<p>{value.format("MM/DD/YYYY")}</p>)
         }
@@ -35,38 +35,38 @@ import useFetchGetEmployees from '../../hook/useFetchGetEmployees';
         title: 'Department',
         dataIndex: 'department',
         key: 'Department',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.department.localeCompare(b.department),
+        sorter: (a: Employee, b: Employee) => a.department.localeCompare(b.department),
     },
     {
         title: 'Date of Birth',
         dataIndex: 'dateOfBirth',
         key: 'DateOfBirth',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.dateOfBirth.unix() - b.dateOfBirth.unix(),
+        sorter: (a: Employee, b: Employee) => a.dateOfBirth.unix() - b.dateOfBirth.unix(),
         render: (value: Dayjs) =>  (<p>{value.format("MM/DD/YYYY")}</p>)
     },
     {
         title: 'Street',
         dataIndex: 'street',
         key: 'Street',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.street.localeCompare(b.street),
+        sorter: (a: Employee, b: Employee) => a.street.localeCompare(b.street),
     },
     {
         title: 'City',
         dataIndex: 'city',
         key: 'City',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.city.localeCompare(b.city),
+        sorter: (a: Employee, b: Employee) => a.city.localeCompare(b.city),
     },
     {
         title: 'State',
         dataIndex: 'state',
         key: 'State',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.state.localeCompare(b.state),
+        sorter: (a: Employee, b: Employee) => a.state.localeCompare(b.state),
     },
     {
         title: 'Zip Code',
         dataIndex: 'zipCode',
         key: 'ZipCode',
-        sorter: (a: EmployeeFromDBConvert, b: EmployeeFromDBConvert) => a.zipCode - b.zipCode,
+        sorter: (a: Employee, b: Employee) => a.zipCode - b.zipCode,
     },
 ];
 

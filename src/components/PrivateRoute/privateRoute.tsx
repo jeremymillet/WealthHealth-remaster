@@ -1,12 +1,11 @@
-import { useContext } from 'react';
 import { Navigate, Outlet, } from 'react-router-dom';
-import { LoginContext } from '../../context/LoginContext';
+import useAuthContext from '../../context/hook/useAuthContext';
 
 
 
 const PrivateRoute = () => {
-  const loginContext = useContext(LoginContext);
-    const { isLogin } = loginContext;
+  const {isLogin} = useAuthContext();
+  
 
   const isAuthenticated = () => {
     return isLogin === true;

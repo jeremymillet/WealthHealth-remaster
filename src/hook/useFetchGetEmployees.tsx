@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { fetchGetEmployees } from "../services";
-import { EmployeeFromDB, EmployeeFromDBConvert} from "../types";
+import { Employee} from "../types";
 import dayjs from "dayjs";
 
 
 function useFetchGetEmployees() {
-  const [data, setData] = useState<EmployeeFromDBConvert[]>([]);
+  const [data, setData] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
    useEffect(() => {
@@ -14,7 +14,10 @@ function useFetchGetEmployees() {
       setError(null);
       try {
         const response = await fetchGetEmployees();
-        const formattedResponse: EmployeeFromDBConvert[] = response.map((employee: EmployeeFromDB) => ({
+        if (!response) {
+          throw new Error("Aucune donnée disponible");
+        }
+        const formattedResponse = response.map((employee: Employee) => ({
           ...employee,
           startDate: dayjs(employee.startDate),
           dateOfBirth: dayjs(employee.dateOfBirth), 

@@ -1,17 +1,18 @@
-import {  useContext, useState } from "react";
+import { useState } from "react";
 import { fetchPostNewEmployees } from "../services";
-import { EmployeeToDBConvert } from "../types";
-import { TokenContext } from "../context/TokenContext";
+import { EmployeeFormValues } from "../types";
+import useAuthContext from "../context/hook/useAuthContext";
+
 
 function useFetchPostEmployee() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
    
-  const tokenContext = useContext(TokenContext);
-  const { token } = tokenContext;
+  const {token} = useAuthContext();
+  
 
 
-    const postEmployee = async (data:EmployeeToDBConvert) => {
+    const postEmployee = async (data:EmployeeFormValues) => {
       setIsLoading(true);
       setError(null);
         try {

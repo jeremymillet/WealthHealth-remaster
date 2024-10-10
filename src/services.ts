@@ -1,4 +1,4 @@
-import { User, EmployeeToDBConvert } from "./types";
+import { User, CreateEmployeeRequest, Employee, Department, States, EmployeeFormValues } from "./types";
 
 export async function fetchGetDepartments(){
     try {
@@ -7,7 +7,7 @@ export async function fetchGetDepartments(){
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         if (response.ok) {
-            const data = await response.json();
+            const data = await response.json() as Department[];
         return data;
         }
         else {
@@ -27,7 +27,7 @@ export async function fetchGetStates(){
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         if (response.ok) {
-            const data = await response.json();
+            const data = await response.json() as States[];
         return data;
         }
         else {
@@ -46,7 +46,7 @@ export async function fetchGetEmployees() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         if (response.ok) {
-            const data = await response.json();
+            const data = await response.json() as Employee[];
             return data;
         }
     }
@@ -77,7 +77,7 @@ export async function fetchPostLogin(payload: User) {
     }
     
 }
-export async function fetchPostNewEmployees(payload: EmployeeToDBConvert,token) {
+export async function fetchPostNewEmployees(payload: EmployeeFormValues,token) {
     console.log(JSON.stringify(payload));
     try {
         const response = await fetch('http://localhost:3001/api/employees', {

@@ -1,7 +1,6 @@
 
 import './App.css'
-import LoginContextProvider from './context/LoginContext'
-import TokenContextProvider from './context/TokenContext'
+import AuthContextProvider from './context/AuthContext'
 import UsersContextProvider from "./context/UsersContext"
 import Router from './Router'
 
@@ -9,14 +8,11 @@ import Router from './Router'
 function App() {
 
   return (
-    <LoginContextProvider>
-      <TokenContextProvider>
+      <AuthContextProvider>
         <UsersContextProvider>
           <Router />
         </UsersContextProvider>
-      </TokenContextProvider>
-    </LoginContextProvider>
-    
+      </AuthContextProvider>
   )
 }
 
