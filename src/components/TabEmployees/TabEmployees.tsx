@@ -1,15 +1,34 @@
-import { useState } from 'react';
-import { Table, Select, Input, Pagination } from 'antd';
+import { useEffect, useState } from 'react';
+import { Table, Select, Input, Pagination, Button, Popconfirm } from 'antd';
 const { Option } = Select;
 const { Search } = Input;
-import {Employee} from '../../types/index'
+import {Employee,ColumnType} from '../../types/index'
 import './TabEmployees.css'
 import { Dayjs } from 'dayjs';
+import useFetchDeleteEmployee from '../../hook/useFetchDeleteEmployee';
+import useAuthContext from '../../context/hook/useAuthContext';
 import useFetchGetEmployees from '../../hook/useFetchGetEmployees';
+import { useNavigate } from 'react-router-dom';
 
 
 
- const tableColumns = [
+
+
+function TabEmployees() {
+    const navigate =  useNavigate();
+    const { data:employeesData,getEmployees,error:errorGetEmployees ,isLoading:isLoadingEmployees } = useFetchGetEmployees();
+    const { deleteEmployee, isLoading: isLoadingDeleteEmployees, error: errorDeleteEmployees } = useFetchDeleteEmployee();
+    const { isLogin } = useAuthContext();
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [searchText, setSearchText] = useState('');
+    
+
+    useEffect(() => {
+        getEmployees()
+    }, []);
+
+    const tableColumns: ColumnType[] = [
     {
         title: 'First Name',
         dataIndex: 'firstName',
@@ -67,14 +86,39 @@ import useFetchGetEmployees from '../../hook/useFetchGetEmployees';
         dataIndex: 'zipCode',
         key: 'ZipCode',
         sorter: (a: Employee, b: Employee) => a.zipCode - b.zipCode,
-    },
-];
-
-function TabEmployees() {
-    const { data : employees, isLoading: isLoadingEmployees, error: errorPostEmployees } = useFetchGetEmployees();
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState(10);
-    const [searchText, setSearchText] = useState('');
+        },];
+    if (isLogin) {
+        tableColumns.push({
+            title: 'Edit',
+            key: 'edit',
+            render: (record?: Employee) => (
+                <Button type="primary" onClick={() => navigate(`/createEmployees/editEmployees/${record?record.id:0}`)}>
+                    Edit
+                </Button>
+            ),
+        });
+        tableColumns.push({
+            title: 'Delete',
+            key: 'delete',
+            render: (record?: Employee) => (
+                <Popconfirm
+                    title="Are you sure you want to delete this employee?"
+                    onConfirm={async () => {
+                    if (record) {
+                        await deleteEmployee(record.id);
+                        await getEmployees();
+                    }
+                    }}
+                >
+                    <Button type="primary">
+                        Delete
+                    </Button>
+                </Popconfirm>
+            ),
+        });
+    }
+    
+    
 
     const handlePageSizeChange = (value: number) => {
         setPageSize(value);
@@ -84,7 +128,7 @@ function TabEmployees() {
         setSearchText(value.toLowerCase());
     };
 
-    const filteredEmployees = employees.filter(employee =>
+    const filteredEmployees = employeesData.filter(employee =>
         Object.values(employee).some(val =>
             typeof val === 'string' && val.toLowerCase().includes(searchText)
         )
@@ -92,10 +136,10 @@ function TabEmployees() {
 
     const sortEmployees = filteredEmployees;
 
-    if (isLoadingEmployees) { 
+    if (isLoadingEmployees || isLoadingDeleteEmployees) { 
         return <p>Loading...</p>;
     }
-    if (errorPostEmployees) { 
+    if (errorGetEmployees || errorDeleteEmployees  ) { 
         return <p>error</p>;
     }
     

@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { fetchGetEmployees } from "../services";
+import { fetchGetEmployee} from "../services";
 import { Employee} from "../types";
 import dayjs from "dayjs";
 
 
-function useFetchGetEmployees() {
+function useFetchGetEmployee() {
   const [data, setData] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
    
-    const getEmployees = async () => {
+    const getEmployee = async (id:number) => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetchGetEmployees();
+        const response = await fetchGetEmployee(id);
         if (!response) {
           throw new Error("Aucune donnée disponible");
         }
@@ -36,7 +36,7 @@ function useFetchGetEmployees() {
     };
      
   
-  return { data, isLoading, error, getEmployees};
+  return { data, isLoading, error, getEmployee};
 }
 
-export default useFetchGetEmployees;
+export default useFetchGetEmployee;

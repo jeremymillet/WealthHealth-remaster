@@ -1,4 +1,4 @@
-import { User, CreateEmployeeRequest, Employee, Department, States, EmployeeFormValues } from "./types";
+import { User,Employee, Department, States, EmployeeFormValues } from "./types";
 
 export async function fetchGetDepartments(){
     try {
@@ -46,6 +46,23 @@ export async function fetchGetEmployees() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         if (response.ok) {
+            const data = await response.json() as Employee;
+            return data;
+        }
+    }
+     catch (error) {
+        console.error("Error fetching ", error);
+        throw error;
+    }
+    
+}
+export async function fetchGetEmployee(id:number) {
+    try {
+        const response = await fetch(`http://localhost:3001/api/employees/${id}`)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        if (response.ok) {
             const data = await response.json() as Employee[];
             return data;
         }
@@ -77,7 +94,7 @@ export async function fetchPostLogin(payload: User) {
     }
     
 }
-export async function fetchPostNewEmployees(payload: EmployeeFormValues,token) {
+export async function fetchPostNewEmployees(payload: EmployeeFormValues,token:string) {
     console.log(JSON.stringify(payload));
     try {
         const response = await fetch('http://localhost:3001/api/employees', {
@@ -103,7 +120,7 @@ export async function fetchPostNewEmployees(payload: EmployeeFormValues,token) {
 
 export async function fetchDeleteEmployees(payload:number,token:string) {
     try {
-        const response = await fetch(`http://localhost:3001/employees/${payload}`, {
+        const response = await fetch(`http://localhost:3001/api/employees/${payload}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -111,7 +128,31 @@ export async function fetchDeleteEmployees(payload:number,token:string) {
             },
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`Failed to delete employee with ID ${payload}. Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+        }
+     catch (error) {
+        console.error("Error fetching ", error);
+        throw error;
+    }
+    
+}
+
+export async function fetchPutEmployees(payload:EmployeeFormValues,token:string,id:number) {
+    try {
+        console.log(payload)
+        const response = await fetch(`http://localhost:3001/api/employees/${id}`, {
+            method: 'Put',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify(payload),
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to delete employee with ID ${payload}. Status: ${response.status}`);
         }
         const data = await response.json();
         return data;

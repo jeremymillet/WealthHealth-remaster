@@ -11,9 +11,12 @@ export type Employee = {
   state: string;
   zipCode: number;
   department: string;
+  departmentId: number;
+  stateId:number;
 };
 
 export type EmployeeFormValues = {
+  id?: number;
   FirstName: string;
   LastName: string;
   DateOfBirth: string;
@@ -40,3 +43,11 @@ export type States = {
   value: string;
   label: string;
 }
+
+export type ColumnType = {
+  title: string;
+  dataIndex?: keyof Employee;
+  key: string;
+  sorter?: (a: Employee, b: Employee) => number;
+  render?: (value: any, record?: Employee) => JSX.Element;
+};

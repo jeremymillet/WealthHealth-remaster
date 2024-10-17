@@ -1,41 +1,68 @@
-
 import { useForm, Controller } from 'react-hook-form';
 import { Form, Input, Button, DatePicker, Select, InputNumber } from 'antd';
 import FormItem from '../Input/FormItem';
 import useYupValidationResolver from '../../hook/useYupValidationresolver';
-import { schemaValidation } from './validationSchema';
 import {useState} from 'react';
-import './CreatEmployeeForm.css'
 import {EmployeeFormValues} from '../../types';
 import { ModalComponent } from "modalopjm"
 import useFetchGetDepartments from '../../hook/useFetchGetDepartments';
 import useFetchGetStates from '../../hook/useFetchGetStates';
-import useFetchPostEmployee from '../../hook/useFetchPostEmployee';
+import { schemaValidation } from '../CreateEmployeeForm/validationSchema';
+import { useParams } from 'react-router-dom';
+import useFetchPutEmployee from '../../hook/useFetchPatchEmployee';
+import useFetchGetEmployee from '../../hook/useFetchGetEmployee';
 
 
-function CreateEmployeeForm() {
-    const { postEmployee, isLoading: isLoadingEmployee, error: errorPostEmployee } = useFetchPostEmployee();
+
+
+function EditEmployeeForm() {
     const { data : states, isLoading: isLoadingStates, error: errorStates } = useFetchGetStates();
     const { data: departments, isloaging: isLoadingDepartments, error: errorDepartments } = useFetchGetDepartments();
-
+    const { PutEmployee, isLoading: isLoadingPutEmployee, error: errorPutEmployee } = useFetchPutEmployee();
+    const { data:employee,getEmployee,error:errorGetEmployee ,isLoading:isLoadingGetEmployee } = useFetchGetEmployee();
+    const { id } = useParams();
+    
+   
     const resolver = useYupValidationResolver(schemaValidation);
     const [open, setIsOpen] = useState(false);
-    const { control, handleSubmit, reset } = useForm({
+    const { control, handleSubmit, reset} = useForm({
             resolver,
             mode: 'onChange',         
             reValidateMode: 'onChange', 
+        defaultValues: async () => {
+            if (id === undefined) {
+            return <p>Employee not found</p>;
+            }   
+            await getEmployee(parseInt(id));
+            return {
+                firstName: employee[0].firstName,
+                lastName: employee[0].lastName,
+                dateOfBirth: employee[0].dateOfBirth,
+                startDate: employee[0].startDate,
+                street: employee[0].street,
+                city: employee[0].city,
+                state: employee[0].stateId,
+                zipCode: employee[0].zipCode,
+                department: employee[0].departmentId,
+            }
+            }
     });
+     
+    if (id === undefined) {
+        return <p>Employee not found</p>;
+    }
     
-    if (isLoadingStates || isLoadingDepartments) {
+    
+    if (isLoadingStates || isLoadingDepartments || isLoadingPutEmployee ||isLoadingGetEmployee ) {
         return <p>Loading...</p>;
     }
 
-    if (errorStates || errorDepartments) {
+    if (errorStates || errorDepartments||errorPutEmployee ||errorGetEmployee) {
         return <p>Error: {errorStates?.message || errorDepartments?.message}</p>;
     }
 
     const handleSubmitForm = (data: EmployeeFormValues) => {
-        postEmployee(data)
+        PutEmployee(parseInt(id), data);
         reset();
         setIsOpen(true);
     };
@@ -174,8 +201,7 @@ function CreateEmployeeForm() {
                 <Button type="primary" htmlType="submit">Save</Button>
             </Form>
             <ModalComponent setIsOpen={setIsOpen} open={open}>
-                {isLoadingEmployee? <p>Loading...</p>:""}
-                {errorPostEmployee? <p>Error</p>: <p>Success</p>}
+                
             </ModalComponent>
 
         </div>
@@ -183,4 +209,4 @@ function CreateEmployeeForm() {
     )
 }
 
-export default CreateEmployeeForm
+export default EditEmployeeForm
