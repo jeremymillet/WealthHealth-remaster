@@ -23,7 +23,6 @@ function TabEmployees() {
     const [pageSize, setPageSize] = useState(10);
     const [searchText, setSearchText] = useState('');
     
-
     useEffect(() => {
         getEmployees()
     }, []);
@@ -186,3 +185,5 @@ function TabEmployees() {
 }
 
 export default TabEmployees
+
+

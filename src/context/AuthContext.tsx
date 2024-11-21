@@ -1,5 +1,6 @@
 import { createContext, PropsWithChildren, useState } from "react";
 
+
 type AuthContextType = {
     isLogin: boolean;
     setIsLogin: (value: boolean) => void;

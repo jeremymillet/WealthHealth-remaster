@@ -19,6 +19,7 @@ function useFetchPostLogin() {
         const response = await fetchPostLogin(data);
         setIsLogin(true);
         setToken(response.token)
+        localStorage.setItem('accessToken', response.accessToken);
           
       } catch (err:unknown) {
         console.error("Erreur lors de la l'envoi", err);

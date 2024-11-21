@@ -1,4 +1,6 @@
-import { User,Employee, Department, States, EmployeeFormValues } from "./types";
+
+import { User, Employee, Department, States, EmployeeFormValues } from "./types";
+
 
 export async function fetchGetDepartments(){
     try {
@@ -46,7 +48,7 @@ export async function fetchGetEmployees() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         if (response.ok) {
-            const data = await response.json() as Employee;
+            const data = await response.json() as Employee[];
             return data;
         }
     }
@@ -77,6 +79,7 @@ export async function fetchPostLogin(payload: User) {
     try {
         const response = await fetch('http://localhost:3001/api/users/login', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -85,6 +88,7 @@ export async function fetchPostLogin(payload: User) {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        
         const data = await response.json();
         return data;
         }
@@ -94,8 +98,85 @@ export async function fetchPostLogin(payload: User) {
     }
     
 }
+export async function fetchPostRefreshAccessToken() {
+
+    try {
+        const response = await fetch('http://localhost:3001/api/users/token', {
+            method: 'POST',
+            credentials: 'include',  // Inclus les cookies dans la requête
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('accessToken', data.accessToken);  // Met à jour l'access token
+        } else {
+            console.error('Failed to refresh token');
+            fetchPostLogout(); // Si le refresh token n'est plus valide, déconnexion
+        }
+    } catch (error) {
+        console.error('Error during token refresh:', error);
+        fetchPostLogout();
+    }
+}
+export async function fetchPostLogout() {
+
+    try {
+        const response = await fetch('http://localhost:3001/api/users/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (response.ok) {
+            localStorage.removeItem('accessToken');
+            console.log('Logout successful!');
+        }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+}
+
+export async function handleApiCallWithTokenRefresh<T>(
+  apiCall: (token: string) => Promise<T>
+): Promise<T> {
+  const token = localStorage.getItem("accessToken");
+  if (!token) {
+    throw new Error("No access token available");
+  }
+
+  try {
+    // Tente d'exécuter l'appel API avec le token actuel
+    return await apiCall(token);
+  } catch (error: any) {
+      if (error.status === 401 || error.message === "access token expired") {
+      console.warn("Access token expired. Attempting to refresh...");
+
+      try {
+        // Rafraîchit le token
+        await fetchPostRefreshAccessToken();
+        const newToken = localStorage.getItem("accessToken");
+        if (!newToken) {
+          throw new Error("Failed to retrieve refreshed token");
+        }
+        if (newToken !== token) {
+            // Relance l'appel API avec le nouveau token
+            return await apiCall(newToken);
+        }
+ 
+      } catch (refreshError) {
+        console.error("Failed to refresh access token:", refreshError);
+        throw refreshError; // Relance l'erreur si la régénération échoue
+      }
+    }
+
+    // Si l'erreur n'est pas liée au token, relance l'erreur
+    throw error;
+  }
+}
+
 export async function fetchPostNewEmployees(payload: EmployeeFormValues,token:string) {
-    console.log(JSON.stringify(payload));
     try {
         const response = await fetch('http://localhost:3001/api/employees', {
             method: 'POST',
@@ -106,7 +187,8 @@ export async function fetchPostNewEmployees(payload: EmployeeFormValues,token:st
             body: JSON.stringify(payload),
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            const errorResponse = await response.json();
+            throw new Error(errorResponse.message);
         }
         const data = await response.json();
         console.log("Response: ", data);
@@ -128,7 +210,8 @@ export async function fetchDeleteEmployees(payload:number,token:string) {
             },
         });
         if (!response.ok) {
-            throw new Error(`Failed to delete employee with ID ${payload}. Status: ${response.status}`);
+            const errorResponse = await response.json();
+            throw new Error(errorResponse.message);
         }
         const data = await response.json();
         return data;
@@ -152,7 +235,8 @@ export async function fetchPutEmployees(payload:EmployeeFormValues,token:string,
             body: JSON.stringify(payload),
         });
         if (!response.ok) {
-            throw new Error(`Failed to delete employee with ID ${payload}. Status: ${response.status}`);
+            const errorResponse = await response.json();
+            throw new Error(errorResponse.message);
         }
         const data = await response.json();
         return data;
