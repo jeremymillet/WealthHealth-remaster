@@ -4,7 +4,7 @@ import { User, Employee, Department, States, EmployeeFormValues } from "./types"
 
 export async function fetchGetDepartments(){
     try {
-        const response = await fetch(`${import.meta.env.API_URL}/api/employees/departments`)
+        const response = await fetch(`https://wealthhealth-remaster-api.onrender.com/api/employees/departments`)
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -24,7 +24,7 @@ export async function fetchGetDepartments(){
 
 export async function fetchGetStates(){
     try {
-        const response = await fetch(`${import.meta.env.API_URL}/api/employees/states`)
+        const response = await fetch(`https://wealthhealth-remaster-api.onrender.com/api/employees/states`)
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -43,7 +43,7 @@ export async function fetchGetStates(){
 }
 export async function fetchGetEmployees() {
     try {
-        const response = await fetch(`${import.meta.env.API_URL}/api/employees`)
+        const response = await fetch(`https://wealthhealth-remaster-api.onrender.com/api/employees`)
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -77,7 +77,7 @@ export async function fetchGetEmployee(id:number) {
 }
 export async function fetchPostLogin(payload: User) {
     try {
-        const response = await fetch(`${import.meta.env.API_URL}/api/users/login`, {
+        const response = await fetch(`https://wealthhealth-remaster-api.onrender.com/api/users/login`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -101,7 +101,7 @@ export async function fetchPostLogin(payload: User) {
 export async function fetchPostRefreshAccessToken() {
 
     try {
-        const response = await fetch(`${import.meta.env.API_URL}/api/users/token`, {
+        const response = await fetch(`https://wealthhealth-remaster-api.onrender.com/api/users/token`, {
             method: 'POST',
             credentials: 'include',  // Inclus les cookies dans la requête
             headers: {
@@ -124,7 +124,7 @@ export async function fetchPostRefreshAccessToken() {
 export async function fetchPostLogout() {
 
     try {
-        const response = await fetch(`${import.meta.env.API_URL}/api/users/logout`, {
+        const response = await fetch(`https://wealthhealth-remaster-api.onrender.com/api/users/logout`, {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -178,7 +178,7 @@ export async function handleApiCallWithTokenRefresh<T>(
 
 export async function fetchPostNewEmployees(payload: EmployeeFormValues,token:string) {
     try {
-        const response = await fetch(`${import.meta.env.API_URL}/api/employees`, {
+        const response = await fetch(`https://wealthhealth-remaster-api.onrender.com/api/employees`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
