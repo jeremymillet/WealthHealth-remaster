@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { Button } from "antd";
-import "./Header.css"
+import "./header.css"
 import { useState } from "react";
 import FormLogin from "../FormLogin/formLogin";
 import { ModalComponent } from "modalopjm";
