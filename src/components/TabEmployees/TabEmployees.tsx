@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Select, Input, Pagination, Button, Popconfirm } from 'antd';
+import { Table, Select, Input, Button, Popconfirm } from 'antd';
 const { Option } = Select;
 const { Search } = Input;
 import {Employee,ColumnType} from '../../types/index'
@@ -22,6 +22,8 @@ function TabEmployees() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState(10);
     const [searchText, setSearchText] = useState('');
+    console.log(pageSize);
+    console.log(employeesData);
     
     useEffect(() => {
         getEmployees()
@@ -117,8 +119,6 @@ function TabEmployees() {
         });
     }
     
-    
-
     const handlePageSizeChange = (value: number) => {
         setPageSize(value);
     };
@@ -161,7 +161,12 @@ function TabEmployees() {
             <Table
                 dataSource={sortEmployees}
                 columns={tableColumns}
-                pagination={false}
+                pagination={{
+                    current: currentPage, // Page actuelle
+                    pageSize: pageSize,    // Taille de page
+                    total: employeesData.length, // Nombre total d'éléments
+                    onChange: (page) => setCurrentPage(page), // Changer de page
+                }}
                 bordered
                 rowKey="id"
                 locale={{ emptyText: 'No data available in table' }}
@@ -173,12 +178,6 @@ function TabEmployees() {
                         sortEmployees.length
                     )} of ${sortEmployees.length} entries`}
                 </div>
-                <Pagination
-                    current={currentPage}
-                    total={sortEmployees.length}
-                    pageSize={pageSize}
-                    onChange={setCurrentPage}
-                />
             </div>
         </div>
     )
