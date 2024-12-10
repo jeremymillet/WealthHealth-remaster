@@ -175,7 +175,7 @@ function CreateEmployeeForm() {
             </Form>
             <ModalComponent setIsOpen={setIsOpen} open={open}>
                 {isLoadingEmployee? <p>Loading...</p>:""}
-                {errorPostEmployee? <p>Error</p>: <p>Success</p>}
+                {errorPostEmployee? <p>Error</p>: isLoadingEmployee?"":<p>Success</p>}
             </ModalComponent>
 
         </div>
