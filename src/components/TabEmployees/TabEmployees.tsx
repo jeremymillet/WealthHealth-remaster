@@ -22,8 +22,6 @@ function TabEmployees() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState(10);
     const [searchText, setSearchText] = useState('');
-    console.log(pageSize);
-    console.log(employeesData);
     
     useEffect(() => {
         getEmployees()
@@ -135,7 +133,7 @@ function TabEmployees() {
 
     const sortEmployees = filteredEmployees;
 
-    if (isLoadingEmployees || isLoadingDeleteEmployees) { 
+    if (isLoadingDeleteEmployees) { 
         return <p>Loading...</p>;
     }
     if (errorGetEmployees || errorDeleteEmployees  ) { 
@@ -169,7 +167,13 @@ function TabEmployees() {
                 }}
                 bordered
                 rowKey="id"
-                locale={{ emptyText: 'No data available in table' }}
+                locale={{ emptyText:isLoadingEmployees? <div className='container-loader'>
+                        <svg className="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                            <circle className="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+                        </svg>
+                        <p>chargement des données</p>
+                    </div>:"no data" }}
+                
             />
             <div className='pagination-container'>
                 <div>
