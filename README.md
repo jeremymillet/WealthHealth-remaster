@@ -180,18 +180,6 @@ Cette application utilise l'API disponible ici :
 
 Des captures de l'application seront ajoutées prochainement.
 
----
-
-# 🚀 Évolutions prévues
-
-- 📊 Tableau de bord
-- 📈 Statistiques
-- 🔍 Recherche avancée
-- 📄 Pagination
-- 🌙 Mode sombre
-- 🧪 Amélioration de la couverture de tests
-
----
 
 # 👨‍💻 Auteur
 
